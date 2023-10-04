@@ -7,11 +7,13 @@
 #include <iterator>
 
 #include "MyImage.h"
-#include "ASCIIConverter.h"
+#include "ASCIIConvertLUT.hpp"
+
+#include "opencv2\opencv.hpp"
 
 void SetFrame()
 {
-	system("mode con: cols=200 lines=200");
+	system("mode con: cols=256 lines=200");
 	CONSOLE_FONT_INFOEX cfi;
 	cfi.cbSize = sizeof(cfi);
 	cfi.nFont = 0;
@@ -27,9 +29,26 @@ int main()
 {
 	SetFrame();
 
-	auto src = MyImage("src.jpg");
-	src.DrawImage();
+    cv::Mat frame;
 
-	system("PAUSE");
+    cv::VideoCapture cap(0);
+    while (cap.isOpened())
+    {
+        auto start = std::chrono::system_clock::now();
+        
+        cap >> frame;
+        if (frame.empty())
+            continue;
+
+        MyImage::ResizeAndAdjustImage(frame, frame, { 256, 144 });
+        MyImage::DrawImage(frame);
+
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+
+        std::cout << std::endl << std::endl;
+        std::cout << std::to_string(1000.f / duration.count()) << " [fps]" << std::endl;
+    }
+    cap.release();
+    
 	return 0;
 }

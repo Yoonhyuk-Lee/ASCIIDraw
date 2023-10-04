@@ -1,20 +1,11 @@
 #pragma once
 #include <string>
-
-namespace cv
-{
-	class Mat;
-}
+#include <opencv2/core/types.hpp>
 
 class MyImage
 {
 public:
-	MyImage(const std::string& filePath);
-	~MyImage();
-
-	void DrawImage();
-
-private:
-	cv::Mat* m_pSrc;
+	static void ResizeAndAdjustImage(const cv::Mat& src, cv::Mat& dst, cv::Size&& size);
+	static void DrawImage(const cv::Mat& src);
 };
 

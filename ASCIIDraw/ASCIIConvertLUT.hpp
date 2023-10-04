@@ -2,8 +2,7 @@
 
 
 constexpr int ASCII_TABLE_SIZE = 91;
-
-static const char ASCII_TABLE[ASCII_TABLE_SIZE] =
+constexpr unsigned char ASCII_TABLE[ASCII_TABLE_SIZE] =
 {
 		'`', '.', '-', '\'', ':', '_', ',', '^', '=', ';', '>',
 		'<', '+', '!', 'r', 'c', '*', '/', 'z', '?', 's',
@@ -16,8 +15,19 @@ static const char ASCII_TABLE[ASCII_TABLE_SIZE] =
 		'B', 'g', '0', 'M', 'N', 'W', 'Q', '%', '&', '@'
 };
 
-class ASCIIConverter
+template<int N>
+struct ASCIIConvertLUT
 {
-public:	
-	static char norm2ASCII(float fVal);
+	constexpr ASCIIConvertLUT() 
+		: LUT()
+	{
+		for (int i = 0; i < N; ++i)
+		{
+			float fVal = i / (float)N;
+			fVal = powf(fVal, 2.f);		// gamma correction
+			LUT[i] = ASCII_TABLE[(int)floorf(fVal * ASCII_TABLE_SIZE)];
+		}
+	}
+
+	int LUT[N];
 };

@@ -21,15 +21,12 @@
     <ClCompile Include="Main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ASCIIConverter.cpp">
-      <Filter>소스 파일\View</Filter>
-    </ClCompile>
     <ClCompile Include="MyImage.cpp">
       <Filter>소스 파일\View</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ASCIIConverter.h">
+    <ClInclude Include="ASCIIConvertLUT.hpp">
       <Filter>소스 파일\View</Filter>
     </ClInclude>
     <ClInclude Include="MyImage.h">

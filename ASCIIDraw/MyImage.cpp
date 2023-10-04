@@ -1,40 +1,35 @@
+#include <Windows.h>
+
 #include "opencv2\opencv.hpp"
 
 #include "MyImage.h"
-#include "ASCIIConverter.h"
+#include "ASCIIConvertLUT.hpp"
 
+static ASCIIConvertLUT<256> ASCIIMap;
+static const cv::Ptr<cv::CLAHE> pCLAHE = cv::createCLAHE(4.);
 
-MyImage::MyImage(const std::string& filePath)
+void MyImage::ResizeAndAdjustImage(const cv::Mat& src, cv::Mat& dst, cv::Size&& size)
 {
-	m_pSrc = new cv::Mat(cv::imread(filePath, cv::IMREAD_GRAYSCALE));
-
-	cv::equalizeHist(*m_pSrc, *m_pSrc);
+	cv::resize(src, dst, size);
+	cv::cvtColor(dst, dst, cv::COLOR_BGR2GRAY);
+	pCLAHE->apply(dst, dst);
 }
 
-MyImage::~MyImage()
+void MyImage::DrawImage(const cv::Mat& src)
 {
-	if (m_pSrc != nullptr)
-	{
-		delete m_pSrc;
-		m_pSrc = nullptr;
-	}
-}
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0, 0 });
 
-void MyImage::DrawImage()
-{
-	if (m_pSrc == nullptr)
-		return;
+	const int W = src.cols;
+	const int H = src.rows;
 
-	const int W = m_pSrc->cols;
-	const int H = m_pSrc->rows;
-
+	std::string line;
+	line.assign(W, ' ');
 	for (int y = 0; y < H; ++y)
 	{
 		for (int x = 0; x < W; ++x)
 		{
-			float val = m_pSrc->at<uchar>(y, x) / 255.f;
-			printf("%c", ASCIIConverter::norm2ASCII(val));
+			line[x] = ASCIIMap.LUT[src.at<uchar>(y, x)];
 		}
-		printf("\n");
+		std::cout << line << std::endl;
 	}
 }
