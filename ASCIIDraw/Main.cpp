@@ -17,11 +17,11 @@ void SetFrame()
 	CONSOLE_FONT_INFOEX cfi;
 	cfi.cbSize = sizeof(cfi);
 	cfi.nFont = 0;
-	cfi.dwFontSize.X = 8;
-	cfi.dwFontSize.Y = 8;                  
+	cfi.dwFontSize.X = 6;
+	cfi.dwFontSize.Y = 6;                  
 	cfi.FontFamily = FF_DONTCARE;
 	cfi.FontWeight = FW_NORMAL;
-	std::wcscpy(cfi.FaceName, L"Terminal"); 
+	std::wcscpy(cfi.FaceName, L"³ª´®°íµñÄÚµù"); 
 	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
 
@@ -40,7 +40,9 @@ int main()
         if (frame.empty())
             continue;
 
+        
         MyImage::ResizeAndAdjustImage(frame, frame, { 256, 144 });
+        MyImage::AnisotropicDiffusion(frame, frame);
         MyImage::DrawImage(frame);
 
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
